@@ -1,4 +1,88 @@
+<?php
+error_reporting(E_ALL);
+session_start();
+if(isset($_SESSION['adminlogin'])){
+	header("location:admin.php");
+}
+if(isset($_SESSION['managerlogin'])){
+	header("location:manager.php");
+}
+if(isset($_SESSION['pharmacistlogin'])){
+	header("location:pharmacist.php");
+}
+if(isset($_SESSION['salesmanlogin'])){
+	header("location:salesman.php");
+}
+include_once 'connect_db.php';
+if(isset($_POST['submit'])){
+	$username=$_POST['username'];
+	$password=md5($_POST['password']);
+	$position=$_POST['position'];
+	switch($position){
+		case 'Admin':
+		$sql="SELECT admin_id, username FROM admin WHERE username='$username' AND password='$password'";
+		$result = $conn->query($sql);
+		if($result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+			$_SESSION['adminlogin']=true;
+			$_SESSION['admin_id']=$row['admin_id'];
+			$_SESSION['username']=$row['username'];
+			header("location:admin.php");
+		}else{
+			$message="<h4 style='text-align:center;color:#FF5722;'>Invalid login Try Again</h4>";
+		}
+		break;
 
+		case 'Manager':
+		$sql="SELECT manager_id, first_name,last_name,staff_id,username FROM manager WHERE username='$username' AND password='$password'";
+		$result = $conn->query($sql);
+		if($result->num_rows > 0) {
+			$_SESSION['managerlogin']=true;
+			$_SESSION['manager_id']=$row[0];
+			$_SESSION['first_name']=$row[1];
+			$_SESSION['last_name']=$row[2];
+			$_SESSION['staff_id']=$row[3];
+			$_SESSION['username']=$row[4];
+			header("location:http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/manager.php");
+		}else{
+		$message="<h4 style='text-align:center;color:#FF5722;'>Invalid login Try Again</h4>";
+		}
+		break;
+
+		case 'Pharmacist':
+		$sql="SELECT pharmacist_id, first_name,last_name,staff_id,username FROM pharmacist WHERE username='$username' AND password='$password'";
+		$result = $conn->query($sql);
+		if($result->num_rows > 0){
+			$_SESSION['pharmacistlogin']=true;
+			$_SESSION['pharmacist_id']=$row[0];
+			$_SESSION['first_name']=$row[1];
+			$_SESSION['last_name']=$row[2];
+			$_SESSION['staff_id']=$row[3];
+			$_SESSION['username']=$row[4];
+			header("location:http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/pharmacist.php");
+		}else{
+		$message="<h4 style='text-align:center;color:#FF5722;'>Invalid login Try Again</h4>";
+		}
+		break;
+
+		case 'Salesman':
+		$sql="SELECT salesman_id, first_name,last_name,staff_id,username FROM salesman WHERE username='$username' AND password='$password'";
+		$result = $conn->query($sql);
+		if($result->num_rows > 0){
+			$_SESSION['salesmanlogin']=true;
+			$_SESSION['salesman_id']=$row[0];
+			$_SESSION['first_name']=$row[1];
+			$_SESSION['last_name']=$row[2];
+			$_SESSION['staff_id']=$row[3];
+			$_SESSION['username']=$row[4];
+			header("location:http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/salesman.php");
+		}else{
+		$message="<h4 style='text-align:center;color:#FF5722;'>Invalid login Try Again</h4>";
+		}
+		break;
+	}
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
